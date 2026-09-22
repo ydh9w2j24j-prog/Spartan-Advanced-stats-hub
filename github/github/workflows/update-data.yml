@@ -25,7 +25,7 @@ jobs:
 
       - name: Run pipeline
         env:
-          CFBD_API_KEY: ${{ zLY/4ybNliBlnQfqDjVPTCFkDui5sTR3Epu+y5CMivmWS4n/xYSd3cbq62lNE/rO }}
+         ${{ secrets.CFBD_API_KEY }}: ${{ zLY/4ybNliBlnQfqDjVPTCFkDui5sTR3Epu+y5CMivmWS4n/xYSd3cbq62lNE/rO }}
         run: python fetch_msu_data.py
 
       - name: Commit updated data
