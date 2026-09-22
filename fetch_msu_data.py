@@ -152,38 +152,45 @@ def build_game_entry(g):
 
 
 def main():
-    season_games = games_api.get_games(year=YEAR, team=TEAM)
-    completed = [g for g in season_games if g.completed]
+season_games = games_api.get_games(year=YEAR, team=TEAM)
+completed = [g for g in season_games if g.completed]
 
-    plays_by_game = []
-    all_plays = []
-    for g in completed:
-        try:
-            plays = plays_api.get_plays(year=YEAR, week=g.week, team=TEAM)
-        except Exception as e:
-            print(f"Skipping week {g.week}: {e}")
-            plays = []
-        plays_by_game.append((g, plays))
-        all_plays += plays
+plays_by_game = []
+all_plays = []
+for g in completed:
+try:
+plays = plays_api.get_plays(year=YEAR, week=g.week, team=TEAM)
+except Exception as e:
+print(f"Skipping week {g.week}: {e}")
+plays = []
+plays_by_game.append((g, plays))
+all_plays += plays
 
-    wins = sum(1 for g in completed if
-               (g.home_points if g.home_team == TEAM else g.away_points) >
-               (g.away_points if g.home_team == TEAM else g.home_points))
+wins = sum(
+1 for g in completed
+if (g.home_points if g.home_team == TEAM else g.away_points) >
+(g.away_points if g.home_team == TEAM else g.home_points)
+)
+losses = len(completed) - wins
+win_pct = round(wins / len(completed), 3) if completed else 0.0
 
-    payload = {
-        "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
-        "record": {"wins": wins, "losses": len(completed) - wins},
-        "matrix": {"all": build_matrix(all_plays)},
-        "special_teams": build_special_teams(completed, plays_by_game),
-        "games": [build_game_entry(g) for g in completed],
-    }
+payload = {
+"generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+"record": {
+"wins": wins,
+"losses": losses,
+"win_percentage": win_pct
+},
+"matrix": {"all": build_matrix(all_plays)},
+"special_teams": build_special_teams(completed, plays_by_game),
+"games": [build_game_entry(g) for g in completed],
+}
 
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w") as f:
-        json.dump(payload, f, indent=2)
+os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+with open(OUT_PATH, "w") as f:
+json.dump(payload, f, indent=2)
 
-    print(f"Wrote {OUT_PATH} \u2014 {len(completed)} completed games")
-
+print(f"Wrote {OUT_PATH} \U002014 {len(completed)} completed games")
 
 if __name__ == "__main__":
-    main()
+main()
