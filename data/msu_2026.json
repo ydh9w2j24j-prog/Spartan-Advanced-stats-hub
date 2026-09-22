@@ -1,0 +1,347 @@
+{
+  "generated_at": "2026-09-22T04:37:31.230440Z",
+  "record": {
+    "wins": 2,
+    "losses": 1
+  },
+  "matrix": {
+    "all": [
+      {
+        "bucket": "1st & 10",
+        "sub": "Standard down",
+        "plays": 196,
+        "rate": 0.383,
+        "epa": -0.03
+      },
+      {
+        "bucket": "2nd & Medium",
+        "sub": "4\u20136 yds to go",
+        "plays": 35,
+        "rate": 0.514,
+        "epa": 0.03
+      },
+      {
+        "bucket": "3rd & Short",
+        "sub": "1\u20133 yds to go",
+        "plays": 50,
+        "rate": 0.62,
+        "epa": 0.29
+      },
+      {
+        "bucket": "3rd & Long",
+        "sub": "7+ yds to go",
+        "plays": 68,
+        "rate": 0.206,
+        "epa": -0.16
+      }
+    ]
+  },
+  "special_teams": {
+    "punts": [
+      {
+        "opp": "TOL",
+        "net": 0.0
+      },
+      {
+        "opp": "EAS",
+        "net": 0.0
+      },
+      {
+        "opp": "NOT",
+        "net": 0.0
+      }
+    ],
+    "field_position": [
+      {
+        "opp": "TOL",
+        "msu": null,
+        "vs": null
+      },
+      {
+        "opp": "EAS",
+        "msu": null,
+        "vs": null
+      },
+      {
+        "opp": "NOT",
+        "msu": null,
+        "vs": null
+      }
+    ]
+  },
+  "games": [
+    {
+      "opp": "Toledo",
+      "tag": "TOL",
+      "result": "W",
+      "score": "30-20",
+      "wp": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "swings": [
+        {
+          "time": "Q? ",
+          "desc": "Shotgun #11 A.Milivojevic pass incomplete short middle to #3 R.Bullard Jr. thrown to MSU32",
+          "wpa": 43.7
+        },
+        {
+          "time": "Q? ",
+          "desc": "Shotgun #8 C.Walendzak rush middle for 71 yards gain to the MSU00 TOUCHDOWN, clock 13:47, 1ST DOWN #6 J.Richter pass attempt failed",
+          "wpa": -29.0
+        },
+        {
+          "time": "Q? ",
+          "desc": "Shotgun #11 A.Milivojevic pass complete short right to #3 R.Bullard Jr. caught at TOL00, for 5 yards to the TOL00 TOUCHDOWN, clock 10:37, 1ST DOWN #3 R.Bullard Jr. pass attempt Successful",
+          "wpa": 22.8
+        },
+        {
+          "time": "Q? ",
+          "desc": "No Huddle-Shotgun #6 J.Richter sacked for loss of 11 yards to the TOL29 (#96 E.Coenen) PENALTY TOL Intentional Grounding (#6 J.Richter)",
+          "wpa": -20.4
+        }
+      ]
+    },
+    {
+      "opp": "Eastern Michigan",
+      "tag": "EAS",
+      "result": "W",
+      "score": "35-7",
+      "wp": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "swings": [
+        {
+          "time": "Q? ",
+          "desc": "Fredrick Moore 18 Yd pass from Alessio Milivojevic (Liam Boyd Kick)",
+          "wpa": 18.6
+        },
+        {
+          "time": "Q? ",
+          "desc": "Shotgun #1 N.Kim rush right for 4 yards gain to the MSU00 TOUCHDOWN, clock 01:50 #46 R.Kessinger kick attempt good (H: #39 D.Hull, LS: #42 J.Kautz)",
+          "wpa": -15.0
+        },
+        {
+          "time": "Q? ",
+          "desc": "Shotgun #0 C.Edwards rush middle for 1 yard gain to the EMU00 TOUCHDOWN, clock 08:45 #37 L.Boyd kick attempt good (H: #9 R.Dakin, LS: #50 N.Duzansky)",
+          "wpa": 12.2
+        },
+        {
+          "time": "Q? ",
+          "desc": "Shotgun #0 C.Edwards rush middle for 2 yards gain to the EMU00 TOUCHDOWN, clock 08:50 #37 L.Boyd kick attempt good (H: #9 R.Dakin, LS: #50 N.Duzansky)",
+          "wpa": 11.3
+        }
+      ]
+    },
+    {
+      "opp": "Notre Dame",
+      "tag": "NOT",
+      "result": "L",
+      "score": "10-27",
+      "wp": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "swings": [
+        {
+          "time": "Q? ",
+          "desc": "(03:24) Shotgun #2 C.Fancher rush left for 15 yards gain to the UND00 TOUCHDOWN, clock 03:21, 1ST DOWN #37 L.Boyd kick attempt good (H: #9 R.Dakin, LS: #50 N.Duzansky)",
+          "wpa": 19.1
+        },
+        {
+          "time": "Q? ",
+          "desc": "(04:34) No Huddle-Shotgun #2 N.James Jr. rush middle for 2 yards gain to the MSU00 TOUCHDOWN, clock 04:31 #35 S.Porath kick attempt good (H: #39 J.Scaife, LS: #96 J.Vinci)",
+          "wpa": -16.8
+        },
+        {
+          "time": "Q? ",
+          "desc": "(10:44) #9 R.Dakin punt 14 yards to the MSU41 blocked by #33 M.Jeffery",
+          "wpa": -13.9
+        },
+        {
+          "time": "Q? ",
+          "desc": "(10:37) Shotgun #2 N.James Jr. rush right for 0 yards to the MSU41 (#5 J.Hall)",
+          "wpa": 13.8
+        }
+      ]
+    }
+  ]
+}
