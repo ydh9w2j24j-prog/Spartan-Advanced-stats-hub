@@ -212,7 +212,7 @@ def build_game_entry(g):
     with open(OUT_PATH, "w") as f:
         json.dump(payload, f, indent=2)
         
-        print(f"Wrote {OUT_PATH} \U002014 Full schedule and stats updated.")
+        print(f"Wrote {OUT_PATH} - \U002014 Full schedule and stats updated.")
         
     if __name__ == "__main__":
         main()
