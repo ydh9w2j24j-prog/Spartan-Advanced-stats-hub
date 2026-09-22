@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spartan Analytics Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root {
+    --green-950:#0d2b23;
+    --green-900:#18453B;
+    --green-700:#28624f;
+    --green-500:#3f8a6d;
+    --sage-300:#a9c1b9;
+    --sage-100:#e4ece8;
+    --paper:#f6f5f1;
+    --ink:#16201c;
+    --ink-soft:#4b5a54;
+    --white:#ffffff;
+    --line:#d8ded9;
+    --amber:#c98a2c;
+    --red:#a83e34;
+
+    color-scheme: light;
+    --bg: var(--paper);
+    --panel: var(--white);
+    --text: var(--ink);
+    --text-soft: var(--ink-soft);
+    --border: var(--line);
+  }
+  :root:not([data-theme="light"]) { }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:#0f1613;
+      --panel:#16201c;
+      --text:#eef2ef;
+      --text-soft:#a9bab2;
+      --border:#2a352f;
+      --sage-100:#1c2622;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#0f1613;
+    --panel:#16201c;
+    --text:#eef2ef;
+    --text-soft:#a9bab2;
+    --border:#2a352f;
+    --sage-100:#1c2622;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', system-ui, sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,h2,h3,h4 { font-family:'Oswald', system-ui, sans-serif; margin:0; letter-spacing:0.01em; }
+  .mono { font-family:'Roboto Mono', monospace; }
+
+  a { color: inherit; }
+
+  /* ---- Top bar ---- */
+  .topbar {
+    position: sticky; top:0; z-index: 40;
+    padding-top: env(safe-area-inset-top, 0px);
+    background: var(--green-900);
+    border-bottom: 3px solid var(--white);
+  }
+  .topbar-inner {
+    max-width: 1180px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 14px 20px;
+  }
+  .brand { display:flex; align-items:center; gap:12px; }
+  .brand-mark {
+    width:38px;height:38px; border-radius:6px;
+    background: var(--white);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald'; font-weight:700; color:var(--green-900); font-size:20px;
+  }
+  .brand-name { color:var(--white); font-weight:600; font-size:19px; line-height:1.1; }
+  .brand-sub { color:var(--sage-300); font-size:11.5px; text-transform:uppercase; letter-spacing:0.12em; margin-top:2px; }
+
+  .season-pill {
+    color:var(--sage-300); font-size:13px; display:flex; gap:18px; align-items:center;
+  }
+  .season-pill strong { color:var(--white); font-weight:600; }
+  .season-pill .rec { color:var(--white); font-family:'Roboto Mono'; font-size:15px; }
+
+  /* ---- Hero ---- */
+  .hero {
+    background: linear-gradient(180deg, var(--green-900) 0%, var(--green-950) 100%);
+    color: var(--white);
+    border-bottom: 1px solid var(--green-700);
+  }
+  .hero-inner {
+    max-width:1180px; margin:0 auto; padding: 40px 20px 30px;
+    display:grid; grid-template-columns: 1.3fr 1fr; gap: 30px;
+  }
+  @media (max-width: 860px){ .hero-inner{ grid-template-columns:1fr; } }
+
+  .hero-headline { font-size: clamp(30px, 4.2vw, 46px); line-height:1.05; font-weight:600; max-width: 620px;}
+  .hero-desc { color: var(--sage-300); font-size:15px; margin-top:14px; max-width:520px; line-height:1.55; }
+
+  .hero-stats { display:grid; grid-template-columns: repeat(3, 1fr); gap:1px; background:var(--green-700); border:1px solid var(--green-700); border-radius:10px; overflow:hidden; align-self:end; }
+  .hero-stat { background: var(--green-950); padding:16px 14px; }
+  .hero-stat .num { font-family:'Roboto Mono'; font-size:26px; font-weight:500; color:var(--white); }
+  .hero-stat .lbl { color:var(--sage-300); font-size:11px; margin-top:6px; text-transform:uppercase; letter-spacing:0.08em; }
+
+  /* ---- Tabs ---- */
+  .tabbar {
+    position: sticky; top: 66px; z-index: 30;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .tabbar-inner { max-width:1180px; margin:0 auto; display:flex; gap: 4px; padding: 0 20px; overflow-x:auto; }
+  .tab-btn {
+    background:none; border:none; cursor:pointer;
+    font-family:'Oswald'; font-size:14.5px; letter-spacing:0.02em;
+    padding: 15px 16px 12px; color: var(--text-soft);
+    border-bottom: 3px solid transparent;
+    white-space:nowrap;
+  }
+  .tab-btn.active { color: var(--green-500); border-bottom-color: var(--green-500); }
+  :root[data-theme="dark"] .tab-btn.active, @media (prefers-color-scheme:dark){ .tab-btn.active{ color:#5fb591; border-color:#5fb591; } }
+
+  main { max-width:1180px; margin:0 auto; padding: 28px 20px 80px; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .section-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom: 16px; flex-wrap:wrap;}
+  .section-title { font-size:22px; font-weight:600; }
+  .section-note { color:var(--text-soft); font-size:13.5px; max-width:480px; }
+
+  .card {
+    background: var(--panel); border:1px solid var(--border); border-radius:10px;
+    padding: 20px;
+  }
+  .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  @media (max-width:860px){ .grid-2{ grid-template-columns:1fr; } }
+
+  select, .btn-select {
+    background: var(--panel); color:var(--text); border:1px solid var(--border);
+    border-radius:6px; padding:7px 10px; font-family:'Inter'; font-size:13.5px;
+  }
+
+  /* success matrix table */
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead th {
+    text-align:left; padding:9px 10px; color:var(--text-soft);
+    font-weight:600; border-bottom:1px solid var(--border); font-size:11.5px;
+    text-transform:uppercase; letter-spacing:0.06em;
+  }
+  tbody td { padding:11px 10px; border-bottom:1px solid var(--border); }
+  tbody tr:last-child td { border-bottom:none; }
+  .bucket-name { font-weight:600; }
+  .bucket-sub { color:var(--text-soft); font-size:12px; }
+
+  .bar-cell { display:flex; align-items:center; gap:8px; }
+  .bar-track { flex:1; height:8px; background:var(--sage-100); border-radius:4px; overflow:hidden; }
+  .bar-fill { height:100%; background:var(--green-500); border-radius:4px; }
+  .bar-fill.low { background: var(--red); }
+  .bar-fill.mid { background: var(--amber); }
+  .bar-val { font-family:'Roboto Mono'; font-size:12.5px; width:40px; text-align:right; }
+
+  .legend-row { display:flex; gap:16px; margin-top:12px; flex-wrap:wrap; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-soft); }
+  .dot { width:9px; height:9px; border-radius:2px; }
+
+  .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+  @media (max-width:760px){ .kpi-row{ grid-template-columns:repeat(2,1fr); } }
+  .kpi { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:16px; }
+  .kpi .v { font-family:'Roboto Mono'; font-size:24px; font-weight:500; }
+  .kpi .l { color:var(--text-soft); font-size:12px; margin-top:5px; }
+  .kpi .d { font-size:12px; margin-top:6px; font-weight:600; }
+  .d.up { color:var(--green-500); } .d.down { color:var(--red); }
+
+  canvas { max-width:100%; }
+
+  .game-picker { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+  .game-chip {
+    border:1px solid var(--border); background:var(--panel); border-radius:20px;
+    padding:7px 13px; font-size:12.5px; cursor:pointer; color:var(--text-soft);
+    font-family:'Roboto Mono';
+  }
+  .game-chip.active { background:var(--green-900); color:var(--white); border-color:var(--green-900); }
+  :root[data-theme="dark"] .game-chip.active, @media (prefers-color-scheme:dark){ .game-chip.active{ background:#3f8a6d; border-color:#3f8a6d; } }
+
+  .swing-list { margin-top:16px; display:flex; flex-direction:column; gap:0; }
+  .swing-item { display:flex; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); align-items:baseline; }
+  .swing-item:last-child{ border-bottom:none; }
+  .swing-time { font-family:'Roboto Mono'; font-size:12px; color:var(--text-soft); width:52px; flex-shrink:0; }
+  .swing-desc { font-size:13.5px; flex:1; }
+  .swing-wpa { font-family:'Roboto Mono'; font-size:13px; font-weight:600; width:64px; text-align:right; flex-shrink:0; }
+  .swing-wpa.pos { color: var(--green-500); }
+  .swing-wpa.neg { color: var(--red); }
+
+  .footnote { color:var(--text-soft); font-size:12px; margin-top:22px; line-height:1.6; }
+
+  ::-webkit-scrollbar { height:6px; width:6px; }
+  ::-webkit-scrollbar-thumb { background: var(--sage-300); border-radius:3px; }
+
+  /* ---- fan explainer tooltips ---- */
+  .infobtn {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:15px; height:15px; border-radius:50%;
+    background: var(--sage-100); color: var(--green-700);
+    font-family:'Inter'; font-size:10px; font-weight:700;
+    border:1px solid var(--border); cursor:pointer; margin-left:5px;
+    position:relative; flex-shrink:0; vertical-align:middle;
+  }
+  :root[data-theme="dark"] .infobtn, @media (prefers-color-scheme:dark){ .infobtn{ color:#8fd4b3; } }
+  .infobtn .pop {
+    display:none; position:absolute; z-index:50; left:50%; bottom:calc(100% + 8px);
+    transform:translateX(-50%);
+    width:230px; background: var(--ink); color:#fff; font-weight:400;
+    font-size:12.5px; line-height:1.5; padding:10px 12px; border-radius:8px;
+    text-align:left; box-shadow:0 6px 20px rgba(0,0,0,0.25);
+  }
+  .infobtn .pop b { color:#fff; }
+  .infobtn .pop::after {
+    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border:6px solid transparent; border-top-color:var(--ink);
+  }
+  .infobtn:hover .pop, .infobtn:focus .pop, .infobtn.open .pop { display:block; }
+
+  .data-status {
+    display:flex; align-items:center; gap:7px; font-size:11.5px; color:var(--sage-300);
+  }
+  .data-dot { width:7px; height:7px; border-radius:50%; background:#5fb591; box-shadow:0 0 0 3px rgba(95,181,145,0.25); }
+
+  .explainer-toggle {
+    border:1px solid var(--border); background:var(--panel); border-radius:7px;
+    padding:6px 12px; font-size:12.5px; cursor:pointer; color:var(--text);
+    display:flex; align-items:center; gap:6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div>
+        <div class="brand-name">Spartan Analytics Hub</div>
+        <div class="brand-sub">MSU Football &middot; Advanced Metrics</div>
+      </div>
+    </div>
+    <div class="season-pill">
+      <div class="data-status"><span class="data-dot"></span><span id="lastUpdated">Updated weekly</span></div>
+      <div>2026 Season</div>
+      <div class="rec" id="seasonRecord">0&ndash;0</div>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-headline">Where the Spartans actually win and lose games.</h1>
+      <p class="hero-desc">Down-and-distance efficiency, hidden special-teams value, and drive-by-drive win probability &mdash; built from play-by-play data, for students who want more than a box score.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num" id="heroStat1">&ndash;</div><div class="lbl">3rd Down Success<span class="infobtn" tabindex="0">i<span class="pop"><b>3rd Down Success</b><br>How often MSU picks up the first down when it matters most &mdash; the down where drives live or die.</span></span></div></div>
+      <div class="hero-stat"><div class="num" id="heroStat2">&ndash;</div><div class="lbl">Field Pos. EPA<span class="infobtn" tabindex="0">i<span class="pop"><b>Field Position EPA</b><br>How much scoring value MSU's field position (from punts &amp; kickoffs) is worth compared to an average team. Positive means the "hidden" battle is going MSU's way.</span></span></div></div>
+      <div class="hero-stat"><div class="num" id="heroStat3">&ndash;</div><div class="lbl">Explosive Plays Allowed<span class="infobtn" tabindex="0">i<span class="pop"><b>Explosive Plays Allowed</b><br>Runs of 15+ yards or passes of 20+ yards given up by the defense. Fewer is better &mdash; these are the plays that flip a game in one snap.</span></span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <div class="tabbar-inner">
+    <button class="tab-btn active" data-tab="matrix">Success Matrix</button>
+    <button class="tab-btn" data-tab="special">Special Teams &amp; Field Position</button>
+    <button class="tab-btn" data-tab="winprob">Win Probability &amp; Game Flow</button>
+  </div>
+</div>
+
+<main>
+
+  <div style="display:flex; align-items:center; gap:8px; color:var(--text-soft); font-size:12.5px; margin-bottom:22px;">
+    <span class="infobtn" tabindex="0" style="margin-left:0;">i<span class="pop"><b>New to advanced stats?</b><br>Every little (i) badge next to a number explains what it means in plain English &mdash; no stats background required.</span></span>
+    New here? Hover or tap the (i) badges next to any stat for a plain-English explanation.
+  </div>
+
+  <!-- ============ PANEL 1: SUCCESS MATRIX ============ -->
+  <section class="panel active" id="panel-matrix">
+    <div class="section-head">
+      <div>
+        <div class="section-title">Down &amp; Distance Success Matrix</div>
+        <div class="section-note">Success = 50% of yards needed on 1st down, 70% on 2nd, 100% on 3rd/4th. Filter by opponent to see where the offense actually stalls.</div>
+      </div>
+      <select id="matrixOpponent"></select>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:14px; font-weight:600;">Success rate by bucket</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Bucket</th>
+              <th>Plays</th>
+              <th>Success Rate<span class="infobtn" tabindex="0">i<span class="pop"><b>Success Rate</b><br>Did the play gain enough yards to keep the drive on schedule? 50% of yards-to-go on 1st down, 70% on 2nd, 100% on 3rd/4th. It rewards steady progress, not just big plays.</span></span></th>
+              <th>EPA/play<span class="infobtn" tabindex="0">i<span class="pop"><b>EPA (Expected Points Added)</b><br>How much a play changed MSU's expected points on the scoreboard. A 4-yard run on 3rd &amp; 3 is worth more than a 4-yard run on 3rd &amp; 12 &mdash; EPA captures that.</span></span></th>
+            </tr>
+          </thead>
+          <tbody id="matrixTableBody"></tbody>
+        </table>
+        <div class="legend-row">
+          <div class="legend-item"><span class="dot" style="background:var(--green-500)"></span>Above target</div>
+          <div class="legend-item"><span class="dot" style="background:var(--amber)"></span>Near target</div>
+          <div class="legend-item"><span class="dot" style="background:var(--red)"></span>Below target</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:14px; font-weight:600;">Run vs. pass split by bucket</h3>
+        <canvas id="matrixChart" height="230"></canvas>
+      </div>
+    </div>
+
+    <div class="footnote">Buckets: 1st &amp; 10 &middot; 2nd &amp; Medium (4&ndash;6 yds) &middot; 3rd &amp; Short (1&ndash;3 yds) &middot; 3rd &amp; Long (7+ yds). Schedule and results reflect MSU's actual 2026 slate under head coach Pat Fitzgerald; the efficiency numbers themselves are still a sample dataset (marked *) until the live pipeline is wired in &mdash; see the setup files for the automated fetch script.</div>
+  </section>
+
+  <!-- ============ PANEL 2: SPECIAL TEAMS ============ -->
+  <section class="panel" id="panel-special">
+    <div class="section-head">
+      <div>
+        <div class="section-title">Special Teams &amp; Field Position Impact</div>
+        <div class="section-note">Games are decided in the field position battle as much as the box score. Tracking net punting, kickoff starting position, and special teams EPA across the season.</div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi"><div class="v">41.4</div><div class="l">Net Punt Avg (yds)<span class="infobtn" tabindex="0">i<span class="pop"><b>Net Punt Average</b><br>Punt distance minus the return &mdash; the actual field flipped, not just how far the ball travels.</span></span></div><div class="d up">&#9650; 1.8 vs. B1G avg</div></div>
+      <div class="kpi"><div class="v">MSU 29.6</div><div class="l">Avg Start After Kickoff<span class="infobtn" tabindex="0">i<span class="pop"><b>Starting Field Position</b><br>Where MSU's offense typically starts a drive after the opponent kicks off. Higher is better &mdash; a shorter field to work with.</span></span></div><div class="d up">&#9650; 2.1 yds</div></div>
+      <div class="kpi"><div class="v">+3.4</div><div class="l">Special Teams EPA (season)<span class="infobtn" tabindex="0">i<span class="pop"><b>Special Teams EPA</b><br>The scoring value MSU's punt, kickoff and field-goal units add compared to a league-average team, added up across the season.</span></span></div><div class="d up">&#9650; Top 30 nationally</div></div>
+      <div class="kpi"><div class="v">2</div><div class="l">Blocked Kicks Forced</div><div class="d down">&#9660; 1 allowed</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:14px; font-weight:600;">Net punting average, by game</h3>
+        <canvas id="puntChart" height="230"></canvas>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px; margin-bottom:14px; font-weight:600;">Starting field position: MSU vs. opponent</h3>
+        <canvas id="fieldPosChart" height="230"></canvas>
+      </div>
+    </div>
+
+    <div class="footnote">Special Teams EPA aggregates punt, kickoff, and field goal value above a league-average baseline. Games shown (Toledo, Eastern Michigan, Notre Dame) are MSU's real 2026 results so far; the underlying numbers are still a sample dataset until the live pipeline is connected.</div>
+  </section>
+
+  <!-- ============ PANEL 3: WIN PROBABILITY ============ -->
+  <section class="panel" id="panel-winprob">
+    <div class="section-head">
+      <div>
+        <div class="section-title">Live Win Probability &amp; Game Flow</div>
+        <div class="section-note">Win probability from kickoff to final whistle &mdash; a running estimate of MSU's chances of winning, updated after every play based on score, time, down, distance and field position.</div>
+      </div>
+    </div>
+
+    <div class="game-picker" id="gamePicker"></div>
+
+    <div class="card">
+      <canvas id="wpChart" height="260"></canvas>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3 style="font-size:15px; margin-bottom:4px; font-weight:600;">Biggest swings<span class="infobtn" tabindex="0">i<span class="pop"><b>WPA (Win Probability Added)</b><br>How many percentage points a single play shifted MSU's win probability. A pick-six might be worth &ndash;20%; a late 4th-down stop might be worth +15%. These are the plays fans remember.</span></span></h3>
+      <div class="section-note" style="margin-bottom:4px;">Plays with the largest win-probability added or subtracted for MSU.</div>
+      <div class="swing-list" id="swingList"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ---------------- Sample season dataset ---------------- */
+// Real 2026 Michigan State schedule (Pat Fitzgerald's 1st season). Results
+// filled in for games already played as of Sep 21, 2026; later games are
+// marked unplayed until your live pipeline fills them in.
+const schedule2026 = [
+  {opp:"Toledo",          date:"Sep 4",  home:true,  played:true,  result:"W", score:"30-20"},
+  {opp:"Eastern Michigan",date:"Sep 12", home:true,  played:true,  result:"W", score:"35-7"},
+  {opp:"Notre Dame",      date:"Sep 19", home:false, played:true,  result:"L", score:"10-27"},
+  {opp:"Nebraska",        date:"Sep 26", home:true,  played:false},
+  {opp:"Wisconsin",       date:"Oct 3",  home:false, played:false},
+  {opp:"Illinois",        date:"Oct 10", home:true,  played:false},
+  {opp:"Northwestern",    date:"Oct 17", home:true,  played:false},
+  {opp:"UCLA",            date:"Oct 24", home:false, played:false},
+  {opp:"Michigan",        date:"Nov 7",  home:false, played:false},
+  {opp:"Washington",      date:"Nov 14", home:true,  played:false},
+  {opp:"Oregon",          date:"Nov 20", home:true,  played:false},
+  {opp:"Rutgers",         date:"Nov 28", home:false, played:false},
+];
+const opponents = schedule2026.map(g=>g.opp);
+const playedGames = schedule2026.filter(g=>g.played);
+
+const matrixDataByOpponent = {
+  "All Opponents": [
+    {bucket:"1st & 10", sub:"Standard down", plays:212, rate:0.47, epa:0.08},
+    {bucket:"2nd & Medium", sub:"4\u20136 yds to go", plays:96, rate:0.44, epa:0.03},
+    {bucket:"3rd & Short", sub:"1\u20133 yds to go", plays:58, rate:0.61, epa:0.22},
+    {bucket:"3rd & Long", sub:"7+ yds to go", plays:71, rate:0.27, epa:-0.19},
+  ],
+};
+opponents.filter(op => playedGames.some(g=>g.opp===op)).forEach((op,i)=>{
+  const jitter = () => (Math.sin(i*13+1)*0.09);
+  matrixDataByOpponent[op] = matrixDataByOpponent["All Opponents"].map(r => ({
+    ...r,
+    plays: Math.max(6, Math.round(r.plays/ (opponents.length*0.55) + (i%4)*2)),
+    rate: Math.min(0.85, Math.max(0.12, r.rate + jitter())),
+    epa: +(r.epa + jitter()*0.8).toFixed(2),
+  }));
+});
+
+const runPassSplit = {
+  labels: ["1st & 10","2nd & Med","3rd & Short","3rd & Long"],
+  run: [58,44,64,18],
+  pass: [42,56,36,82],
+};
+
+const puntGames = playedGames.map((g,i)=> ({ opp: g.opp.slice(0,3).toUpperCase(), net: +(36 + Math.sin(i*2+2)*5 + 4).toFixed(1) }));
+const fieldPosGames = playedGames.map((g,i)=> ({
+  opp: g.opp.slice(0,3).toUpperCase(),
+  msu: +(27 + Math.sin(i*1.7+1)*4).toFixed(1),
+  vs: +(24 + Math.cos(i*1.4+2)*3).toFixed(1),
+}));
+
+// Win probability traces per played game (0-60 min), plus notable swing plays
+function genWP(seed, comeback){
+  const pts = [];
+  let wp = 0.5;
+  for(let m=0;m<=60;m++){
+    const drift = Math.sin((m/60)*Math.PI*2 + seed) * 0.18;
+    const noise = (Math.sin(m*seed*2.1)+Math.sin(m*seed*0.7))*0.04;
+    let target = 0.5 + drift + noise;
+    if(comeback && m>42) target += (m-42)/18*0.35;
+    wp = wp*0.55 + target*0.45;
+    wp = Math.min(0.97, Math.max(0.03, wp));
+    pts.push(+ (wp*100).toFixed(1));
+  }
+  return pts;
+}
+const games = playedGames.map((g,i)=>{
+  const wp = genWP(0.6+i*0.4, g.result==="W" && i===0);
+  return {
+    opp: g.opp, tag: g.opp.slice(0,3).toUpperCase(), result: g.result, score: g.score, wp,
+    swings: [
+      {time:`Q1 ${8-i%4}:12`, desc:`MSU explosive run breaks off vs. ${g.opp}`, wpa: +(4+i%5)},
+      {time:`Q2 2:0${i%9}`, desc:`Turnover deep in MSU territory`, wpa: -(9+i%6)},
+      {time:`Q3 ${11-i%5}:40`, desc:`Field goal extends the margin after a 3-and-out`, wpa: +(3+i%4)},
+      {time:`Q4 ${4-i%4}:1${i%5}`, desc: g.result==="W" ? `Late stop/score seals the win` : `Late possession runs out the comeback bid`, wpa: g.result==="W" ? 15 : -12},
+    ],
+  };
+});
+
+/* ---------------- Rendering helpers ---------------- */
+const CSS = getComputedStyle(document.documentElement);
+function cssVar(name){ return CSS.getPropertyValue(name).trim(); }
+
+function barClass(rate, target){
+  if(rate >= target) return "";
+  if(rate >= target - 0.12) return "mid";
+  return "low";
+}
+
+function renderMatrixTable(list){
+  const targets = {"1st & 10":0.5, "2nd & Medium":0.5, "3rd & Short":1.0, "3rd & Long":1.0};
+  const tbody = document.getElementById("matrixTableBody");
+  tbody.innerHTML = list.map(r=>{
+    const pct = Math.round(r.rate*100);
+    const cls = barClass(r.rate, 0.42); // visual threshold for success-rate coloring
+    const epaColor = r.epa >= 0 ? "var(--green-500)" : "var(--red)";
+    return `<tr>
+      <td><div class="bucket-name">${r.bucket}</div><div class="bucket-sub">${r.sub}</div></td>
+      <td class="mono">${r.plays}</td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div><div class="bar-val">${pct}%</div></div></td>
+      <td class="mono" style="color:${epaColor}">${r.epa >= 0 ? "+" : ""}${r.epa}</td>
+    </tr>`;
+  }).join("");
+}
+
+let matrixChart, puntChart, fieldPosChart, wpChart;
+
+function renderMatrixChart(){
+  const ctx = document.getElementById("matrixChart");
+  if(matrixChart) matrixChart.destroy();
+  matrixChart = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels: runPassSplit.labels,
+      datasets:[
+        {label:'Run %', data: runPassSplit.run, backgroundColor: cssVar('--green-500'), borderRadius:4, maxBarThickness:34},
+        {label:'Pass %', data: runPassSplit.pass, backgroundColor: cssVar('--sage-300'), borderRadius:4, maxBarThickness:34},
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{ legend:{ position:'bottom', labels:{ color: cssVar('--text-soft'), boxWidth:10, font:{family:'Inter', size:11.5} } } },
+      scales:{
+        x:{ stacked:true, grid:{display:false}, ticks:{color:cssVar('--text-soft'), font:{family:'Inter', size:11.5}} },
+        y:{ stacked:true, grid:{color:cssVar('--border')}, ticks:{color:cssVar('--text-soft')}, max:100 }
+      }
+    }
+  });
+}
+
+function renderPuntChart(){
+  const ctx = document.getElementById("puntChart");
+  if(puntChart) puntChart.destroy();
+  puntChart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: puntGames.map(g=>g.opp), datasets:[{ data: puntGames.map(g=>g.net), backgroundColor: cssVar('--green-500'), borderRadius:5, maxBarThickness:26 }]},
+    options:{
+      plugins:{ legend:{display:false} },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:cssVar('--text-soft'), font:{family:'Roboto Mono', size:10.5}} },
+        y:{ grid:{color:cssVar('--border')}, ticks:{color:cssVar('--text-soft')}, title:{display:true, text:'Net yards', color:cssVar('--text-soft')} }
+      }
+    }
+  });
+}
+
+function renderFieldPosChart(){
+  const ctx = document.getElementById("fieldPosChart");
+  if(fieldPosChart) fieldPosChart.destroy();
+  fieldPosChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: fieldPosGames.map(g=>g.opp),
+      datasets:[
+        {label:'MSU start', data: fieldPosGames.map(g=>g.msu), borderColor: cssVar('--green-500'), backgroundColor:'transparent', tension:0.35, pointRadius:3},
+        {label:'Opponent start', data: fieldPosGames.map(g=>g.vs), borderColor: cssVar('--red'), backgroundColor:'transparent', tension:0.35, pointRadius:3, borderDash:[4,3]},
+      ]
+    },
+    options:{
+      plugins:{ legend:{ position:'bottom', labels:{ color: cssVar('--text-soft'), boxWidth:10, font:{family:'Inter', size:11.5} } } },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:cssVar('--text-soft'), font:{family:'Roboto Mono', size:10.5}} },
+        y:{ grid:{color:cssVar('--border')}, ticks:{color:cssVar('--text-soft')}, title:{display:true, text:'Own yard line', color:cssVar('--text-soft')} }
+      }
+    }
+  });
+}
+
+function renderWPChart(game){
+  const ctx = document.getElementById("wpChart");
+  if(wpChart) wpChart.destroy();
+  wpChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: Array.from({length:61}, (_,i)=> i),
+      datasets:[{
+        label:'MSU Win Probability',
+        data: game.wp,
+        borderColor: cssVar('--green-500'),
+        backgroundColor: 'rgba(63,138,109,0.12)',
+        fill:true, tension:0.25, pointRadius:0, borderWidth:2.2,
+      }]
+    },
+    options:{
+      plugins:{
+        legend:{display:false},
+        tooltip:{ callbacks:{ label:(c)=> `MSU: ${c.parsed.y}%` } }
+      },
+      scales:{
+        x:{ title:{display:true, text:'Minute', color:cssVar('--text-soft')}, grid:{display:false}, ticks:{color:cssVar('--text-soft'), maxTicksLimit:7} },
+        y:{ min:0, max:100, title:{display:true, text:'Win probability %', color:cssVar('--text-soft')}, grid:{color:cssVar('--border')}, ticks:{color:cssVar('--text-soft')} }
+      }
+    }
+  });
+}
+
+function renderSwings(game){
+  const el = document.getElementById("swingList");
+  const sorted = [...game.swings].sort((a,b)=> Math.abs(b.wpa)-Math.abs(a.wpa));
+  el.innerHTML = sorted.map(s=>`
+    <div class="swing-item">
+      <div class="swing-time">${s.time}</div>
+      <div class="swing-desc">${s.desc}</div>
+      <div class="swing-wpa ${s.wpa>=0?'pos':'neg'}">${s.wpa>=0?'+':''}${s.wpa}% WPA</div>
+    </div>`).join("");
+}
+
+/* ---------------- Wire up controls ---------------- */
+const matrixSelect = document.getElementById("matrixOpponent");
+matrixSelect.innerHTML = ["All Opponents", ...playedGames.map(g=>g.opp)].map(o=>`<option value="${o}">${o}</option>`).join("");
+matrixSelect.addEventListener("change", ()=>{
+  const list = matrixDataByOpponent[matrixSelect.value];
+  renderMatrixTable(list);
+});
+
+const gamePicker = document.getElementById("gamePicker");
+gamePicker.innerHTML = games.map((g,i)=> `<button class="game-chip ${i===0?'active':''}" data-i="${i}">${g.result} &middot; ${g.tag} ${g.score}</button>`).join("");
+gamePicker.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".game-chip");
+  if(!btn) return;
+  [...gamePicker.children].forEach(c=>c.classList.remove("active"));
+  btn.classList.add("active");
+  const g = games[+btn.dataset.i];
+  renderWPChart(g);
+  renderSwings(g);
+});
+
+/* ---------------- Tabs ---------------- */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+  });
+});
+
+/* ---------------- Fan-facing derived numbers ---------------- */
+function populateHeroStats(){
+  const all = matrixDataByOpponent["All Opponents"];
+  const thirdDown = all.filter(r=>r.bucket.startsWith("3rd"));
+  const thirdRate = thirdDown.length ? thirdDown.reduce((a,r)=>a+r.rate,0)/thirdDown.length : 0;
+  document.getElementById("heroStat1").textContent = Math.round(thirdRate*100)+"%";
+  document.getElementById("heroStat2").textContent = "+4.8*";
+  document.getElementById("heroStat3").textContent = "18*";
+  const wins = playedGames.filter(g=>g.result==="W").length;
+  const losses = playedGames.filter(g=>g.result==="L").length;
+  document.getElementById("seasonRecord").textContent = `${wins}\u2013${losses}`;
+  document.getElementById("lastUpdated").textContent = "Schedule is real \u2014 stats are sample*";
+}
+
+/* Tap-to-toggle info badges (so touch devices don't rely on hover) */
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".infobtn");
+  document.querySelectorAll(".infobtn.open").forEach(b=>{ if(b!==btn) b.classList.remove("open"); });
+  if(btn){ btn.classList.toggle("open"); e.stopPropagation(); }
+  else { document.querySelectorAll(".infobtn.open").forEach(b=>b.classList.remove("open")); }
+});
+
+/* ---------------- Init ---------------- */
+renderMatrixTable(matrixDataByOpponent["All Opponents"]);
+renderMatrixChart();
+renderPuntChart();
+renderFieldPosChart();
+renderWPChart(games[0]);
+renderSwings(games[0]);
+populateHeroStats();
+
+/* ---------------- Live data hook ----------------
+   Looks for ./data/msu_2026.json next to this page (produced by
+   fetch_msu_data.py + the weekly GitHub Action). If found, it overrides
+   the sample data above and re-renders. In the Claude-hosted preview this
+   file doesn't exist, so it fails quietly and the sample data stays.
+   Expected JSON shape:
+   {
+     "generated_at": "2026-09-27T13:00:00Z",
+     "record": {"wins": 2, "losses": 1},
+     "matrix": { "all": [ {bucket, plays, rate, epa}, ... ] },
+     "special_teams": {
+       "punts": [ {opp, net}, ... ],
+       "field_position": [ {opp, msu, vs}, ... ]
+     },
+     "games": [
+       { "opp": "Toledo", "tag": "TOL", "result": "W", "score": "30-20",
+         "wp": [61 numbers, 0-100, minute by minute],
+         "swings": [ {time, desc, wpa}, ... ] }, ...
+     ]
+   }
+*/
+(async function loadLiveData(){
+  let data;
+  try {
+    const res = await fetch('./data/msu_2026.json', {cache:'no-store'});
+    if(!res.ok) return;
+    data = await res.json();
+  } catch(e) { return; } // no live file yet — sample data stands
+
+  try {
+    if(data.matrix && Array.isArray(data.matrix.all)){
+      matrixDataByOpponent["All Opponents"] = data.matrix.all;
+      if(matrixSelect.value === "All Opponents") renderMatrixTable(data.matrix.all);
+    }
+    if(data.special_teams){
+      if(Array.isArray(data.special_teams.punts)){
+        puntGames.length = 0; puntGames.push(...data.special_teams.punts);
+        renderPuntChart();
+      }
+      if(Array.isArray(data.special_teams.field_position)){
+        fieldPosGames.length = 0; fieldPosGames.push(...data.special_teams.field_position);
+        renderFieldPosChart();
+      }
+    }
+    if(Array.isArray(data.games) && data.games.length){
+      games.length = 0; games.push(...data.games);
+      gamePicker.innerHTML = games.map((g,i)=> `<button class="game-chip ${i===0?'active':''}" data-i="${i}">${g.result} &middot; ${g.tag} ${g.score}</button>`).join("");
+      renderWPChart(games[0]);
+      renderSwings(games[0]);
+    }
+    if(data.record){
+      document.getElementById("seasonRecord").textContent = `${data.record.wins}\u2013${data.record.losses}`;
+    }
+    document.getElementById("lastUpdated").textContent = "Live \u2014 updated " + new Date(data.generated_at).toLocaleDateString();
+  } catch(e) {
+    console.error("Live data present but malformed:", e);
+  }
+})();
+
+</script>
+</body>
+</html>
