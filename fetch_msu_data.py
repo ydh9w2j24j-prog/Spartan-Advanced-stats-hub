@@ -152,9 +152,7 @@ def build_game_entry(g):
 
 
 def main():
-# Fetch all games for the target team and year (both completed and future)
 season_games = games_api.get_games(year=YEAR, team=TEAM)
-
 completed = [g for g in season_games if g.completed]
 
 plays_by_game = []
@@ -168,7 +166,6 @@ plays = []
 plays_by_game.append((g, plays))
 all_plays += plays
 
-# Calculate record
 wins = sum(
 1 for g in completed
 if (g.home_points if g.home_team == TEAM else g.away_points) >
@@ -177,11 +174,9 @@ if (g.home_points if g.home_team == TEAM else g.away_points) >
 losses = len(completed) - wins
 win_pct = round(wins / len(completed), 3) if completed else 0.0
 
-# Fetch player stats for completed games to highlight key players
 key_players = []
 try:
 player_stats_data = games_api.get_game_player_stats(year=YEAR, team=TEAM)
-# Parse or pass player stats structure as needed for your front-end
 key_players = player_stats_data
 except Exception as e:
 print(f"Could not fetch player stats: {e}")
@@ -220,3 +215,4 @@ print(f"Wrote {OUT_PATH} \U002014 Full schedule and stats updated.")
 
 if __name__ == "__main__":
 main()
+
