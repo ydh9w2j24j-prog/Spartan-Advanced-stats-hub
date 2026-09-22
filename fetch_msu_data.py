@@ -118,7 +118,7 @@ def build_game_entry(g):
         for w in wp_raw:
             seconds_left = getattr(w, "seconds_remaining_in_game", 3600) or 3600
             minute = 60 - min(60, max(0, int(seconds_left // 60)))
-            prob = w.home_win if is_home else (1 - w.home_win)
+            prob = w.home_win_probability if is_home else (1 - w.home_win_probability)
             wp61[minute] = round(prob * 100, 1)
         # forward-fill any minutes with no play recorded
         last = 50.0
@@ -135,7 +135,7 @@ def build_game_entry(g):
         deltas = []
         prev = None
         for w in wp_raw:
-            prob = (w.home_win if is_home else (1 - w.home_win)) * 100
+            prob = (w.home_win_probability if is_home else (1 - w.home_win_probability)) * 100
             if prev is not None:
                 deltas.append((prob - prev, w))
             prev = prob
