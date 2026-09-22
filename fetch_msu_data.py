@@ -152,67 +152,68 @@ def build_game_entry(g):
 
 
     def main():
-    season_games = games_api.get_games(year=YEAR, team=TEAM)
-    completed = [g for g in season_games if g.completed]
-    
-    plays_by_game = []
-    all_plays = []
-    for g in completed:
-    try:
-    plays = plays_api.get_plays(year=YEAR, week=g.week, team=TEAM)
-    except Exception as e:
-    print(f"Skipping week {g.week}: {e}")
-    plays = []
-    plays_by_game.append((g, plays))
-    all_plays += plays
-    
-    wins = sum(
-    1 for g in completed
-    if (g.home_points if g.home_team == TEAM else g.away_points) >
-    (g.away_points if g.home_team == TEAM else g.home_points)
-    )
-    losses = len(completed) - wins
-    win_pct = round(wins / len(completed), 3) if completed else 0.0
-    
-    key_players = []
-    try:
-    player_stats_data = games_api.get_game_player_stats(year=YEAR, team=TEAM)
-    key_players = player_stats_data
-    except Exception as e:
-    print(f"Could not fetch player stats: {e}")
-    
-    payload = {
-    "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
-    "record": {
-    "wins": wins,
-    "losses": losses,
-    "win_percentage": win_pct
-    },
-    "schedule": [
-    {
-    "week": g.week,
-    "season_type": g.season_type,
-    "start_date": g.start_date,
-    "home_team": g.home_team,
-    "away_team": g.away_team,
-    "home_points": g.home_points,
-    "away_points": g.away_points,
-    "completed": g.completed,
-    }
-    for g in season_games
-    ],
-    "key_players": key_players,
-    "matrix": {"all": build_matrix(all_plays)},
-    "special_teams": build_special_teams(completed, plays_by_game),
-    "games": [build_game_entry(g) for g in completed],
-    }
-    
-    os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
-    with open(OUT_PATH, "w") as f:
-    json.dump(payload, f, indent=2)
-    
-    print(f"Wrote {OUT_PATH} \U002014 Full schedule and stats updated.")
-    
-    if __name__ == "__main__":
-    main()
+        
+        season_games = games_api.get_games(year=YEAR, team=TEAM)
+        completed = [g for g in season_games if g.completed]
+        
+        plays_by_game = []
+        all_plays = []
+        for g in completed:
+        try:
+        plays = plays_api.get_plays(year=YEAR, week=g.week, team=TEAM)
+        except Exception as e:
+        print(f"Skipping week {g.week}: {e}")
+        plays = []
+        plays_by_game.append((g, plays))
+        all_plays += plays
+        
+        wins = sum(
+        1 for g in completed
+        if (g.home_points if g.home_team == TEAM else g.away_points) >
+        (g.away_points if g.home_team == TEAM else g.home_points)
+        )
+        losses = len(completed) - wins
+        win_pct = round(wins / len(completed), 3) if completed else 0.0
+        
+        key_players = []
+        try:
+        player_stats_data = games_api.get_game_player_stats(year=YEAR, team=TEAM)
+        key_players = player_stats_data
+        except Exception as e:
+        print(f"Could not fetch player stats: {e}")
+        
+        payload = {
+        "generated_at": datetime.datetime.utcnow().isoformat() + "Z",
+        "record": {
+        "wins": wins,
+        "losses": losses,
+        "win_percentage": win_pct
+        },
+        "schedule": [
+        {
+        "week": g.week,
+        "season_type": g.season_type,
+        "start_date": g.start_date,
+        "home_team": g.home_team,
+        "away_team": g.away_team,
+        "home_points": g.home_points,
+        "away_points": g.away_points,
+        "completed": g.completed,
+        }
+        for g in season_games
+        ],
+        "key_players": key_players,
+        "matrix": {"all": build_matrix(all_plays)},
+        "special_teams": build_special_teams(completed, plays_by_game),
+        "games": [build_game_entry(g) for g in completed],
+        }
+        
+        os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
+        with open(OUT_PATH, "w") as f:
+        json.dump(payload, f, indent=2)
+        
+        print(f"Wrote {OUT_PATH} \U002014 Full schedule and stats updated.")
+        
+        if __name__ == "__main__":
+        main()
 
