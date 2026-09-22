@@ -109,7 +109,7 @@ def build_game_entry(g):
     result = "W" if (msu_points or 0) > (opp_points or 0) else "L"
     score = f"{msu_points}-{opp_points}"
 
-    wp_raw = metrics_api.get_win_probability_data(game_id=g.id)
+   wp_raw = metrics_api.get_win_probability(game_id=g.id)
     # Resample CFBD's per-play win prob down to 61 points (minute 0-60) so
     # it lines up with the front end's fixed-length array.
     wp61 = [None] * 61
