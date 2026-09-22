@@ -118,7 +118,7 @@ def build_game_entry(g):
         for w in wp_raw:
             seconds_left = getattr(w, "seconds_remaining_in_game", 3600) or 3600
             minute = 60 - min(60, max(0, int(seconds_left // 60)))
-            prob = w.home_win_prob if is_home else (1 - w.home_win_prob)
+            prob = w.home_win_prob if is_home else (1 - w.home_win)
             wp61[minute] = round(prob * 100, 1)
         # forward-fill any minutes with no play recorded
         last = 50.0
