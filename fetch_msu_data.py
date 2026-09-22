@@ -176,10 +176,10 @@ def build_game_entry(g):
     win_pct = round(wins / len(completed), 3) if completed else 0.0
         
     key_players = []
-        try:
+    try:
         player_stats_data = games_api.get_game_player_stats(year=YEAR, team=TEAM)
         key_players = player_stats_data
-        except Exception as e:
+    except Exception as e:
         print(f"Could not fetch player stats: {e}")
         
     payload = {
