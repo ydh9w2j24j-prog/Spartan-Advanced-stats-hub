@@ -163,7 +163,7 @@ def build_game_entry(g):
                 plays = plays_api.get_plays(year=YEAR, week=g.week, team=TEAM)
             except Exception as e:
                 print(f"Skipping week {g.week}: {e}")
-                 plays = []
+                plays = []
         plays_by_game.append((g, plays))
         all_plays += plays
         
