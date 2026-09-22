@@ -1,0 +1,49 @@
+name: Update MSU football data and deploy
+
+on:
+  schedule:
+    - cron: "0 13 * * 2"   # 8am ET every Tuesday
+  workflow_dispatch:        # adds a manual "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install cfbd
+
+      - name: Run pipeline
+        env:
+          CFBD_API_KEY: ${{ zLY/4ybNliBlnQfqDjVPTCFkDui5sTR3Epu+y5CMivmWS4n/xYSd3cbq62lNE/rO }}
+        run: python fetch_msu_data.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "spartan-analytics-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/msu_2026.json
+          git diff --staged --quiet || git commit -m "Weekly data update"
+          git push
+
+      - name: Prepare Pages artifact
+        run: |
+          mkdir -p site
+          cp spartan-analytics.html site/index.html
+          cp -r data site/data
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - uses: actions/deploy-pages@v4
