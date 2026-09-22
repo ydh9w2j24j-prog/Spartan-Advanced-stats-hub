@@ -135,7 +135,7 @@ def build_game_entry(g):
         deltas = []
         prev = None
         for w in wp_raw:
-            prob = (w.home_win_prob if is_home else (1 - w.home_win_prob)) * 100
+            prob = (w.home_win if is_home else (1 - w.home_win)) * 100
             if prev is not None:
                 deltas.append((prob - prev, w))
             prev = prob
